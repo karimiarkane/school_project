@@ -1,111 +1,138 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "header.h"
 
+int *tab_num_identif= NULL;
+int nbr_case = 0;
+bool trouv  = false; /* pour indiquer si la presence d'un identificateur dans le tab_num_identif */
+int i,c;/* l'emplacement du valeur recherche ou ou doit elle se trouve */
 int main()
 {
-    int num_class;int i =1;
-    int t=1;
-    int pre_annee = 0 ;
-    int deux_annee=0;
-    int trois_annee=0;
-    int quat_annee=0;
-    int cinq_annee=0;
-    int prep=0;
+    /******generation du nombre aleatoire*****************/
 
-    while(i<=18)
+    int num, bi, h,bs,dernier_element, der_indice,avant_der_indice,s,t=2,
+                                                                     repence;
+label1:
+    do
     {
-        srand(t);
+        srand (t);/*pour que la fonction rand genere different nombre aleatoire*/
+        num = (rand() % (9999 -1000 +1))+1000; /* generation d'un nombre aleatoire dans l'interval des nombre de 4 digits [1000 , 9999]*/
+        printf("\n num = %d",num);
+        printf("\n tab_num_identif@firstly = %p", tab_num_identif);
+        /*rechanche le dans le bloc ou l'emplacement apres l'inserer*****************/
+        if (nbr_case == 0)/* le tab_num_identif est vide donc la pas de recherche obliger*/
+        {
+            tab_num_identif = (int* )malloc(sizeof(int));
+            printf("\n tab_num_identif@ primaire = %p", tab_num_identif);
+            tab_num_identif[0]= num;
+            printf("\ntab_num_identif[0] = %d",tab_num_identif[0]);
 
-regenerer:
-        num_class = rand()%6;
-        printf("\n random = %d",num_class);
-        if (num_class == 1)
-        {
-            pre_annee++;
-            printf("\n l'etudiant est un etudiant de %d annee",num_class);
-            printf("\n donc \n le nbr d'etudiant devient %d",pre_annee);
-            if (pre_annee > 3)
-            {
-                printf("\n le nbr n'est pas genere goto regenrer");
-                goto regenerer;
-            }
+            nbr_case++;
+            printf(" \n  nbre_case = %d , tab_num_identif[0]  = %d", nbr_case,tab_num_identif[0]);
         }
-        else
+        else   /* tab_num_identif non vide*/
         {
-            if (num_class == 2)
+            if (num > tab_num_identif[nbr_case - 1])
             {
-                deux_annee ++;
-                printf("\n l'etudiant est un etudiant de %d annee",num_class);
-                printf("\n donc \n le nbr d'etudiant devient %d",deux_annee);
-                if (deux_annee > 3)
-                {
-                    printf("\n le nbr n'est pas genere goto regenrer");
-                    goto regenerer;
-                }
+                dernier_element = num;
+                tab_num_identif=(int*)realloc(tab_num_identif,(nbr_case + 1)*sizeof(int));
+                printf("\n@tab apres realoc %p",tab_num_identif);
+                nbr_case++;
+                tab_num_identif[nbr_case- 1 ]=dernier_element;
+                printf("\n tab[%d] = %d ",nbr_case- 1, tab_num_identif[nbr_case- 1]);
             }
             else
             {
-                if( num_class == 3)
+                /* recherche{
+                initialisation des bande sup et inf */
+                bi = 0;
+                bs = nbr_case -1  ;
+                printf("\n le tab_num_identif n'est pas vide on cherche avec bs = %d et bi =%d",bs, bi);
+                do
                 {
-                    trois_annee ++;
-                    printf("\n l'etudiant est un etudiant de %d annee",num_class);
-                    printf("\n donc \n le nbr d'etudiant devient %d",trois_annee);
-                    if (trois_annee > 3)
+                    printf("\n bi =%d \n bs = %d ",bi,bs,c,i);
+
+                    c  = (bi + bs ) / 2;
+                    printf("\n le centre c=%d ",c);
+                    if (tab_num_identif[c] == num)
                     {
-                        printf("\n le nbr n'est pas genere goto regenrer");
-                        goto regenerer;
-                    }
-                }
-                else
-                {
-                    if (num_class == 4)
-                    {
-                        quat_annee ++;
-                        printf("\n l'etudiant est un etudiant de %d annee",num_class);
-                        printf("\n donc \n le nbr d'etudiant devient %d",quat_annee);
-                        if (quat_annee > 3)
-                        {
-                            printf("\n le nbr n'est pas genere goto regenrer");
-                            goto regenerer;
-                        }
+                        printf("\n tab[c]=%d ",tab_num_identif[c]);
+                        trouv == true;
+                        i=c;
+                        printf("\n il est egale est on trouver lelement a l'emplacement i = %d ", i);
                     }
                     else
                     {
-                        if (num_class == 5)
+                        printf("\n il n'est pas egale et en va changer les bande " );
+                        if (tab_num_identif[c] > num)
                         {
-                            cinq_annee ++;
-                            printf("\n l'etudiant est un etudiant de %d annee",num_class);
-                            printf("\n donc \n le nbr d'etudiant devient %d",cinq_annee);
-                            if (cinq_annee > 3)
-                            {
-                                printf("\n le nbr n'est pas genere goto regenrer");
-                                goto regenerer;
-                            }
+                            bs = c-1;
+                            printf("\n le numero est ineriere est en va changer le bs a %d",bs);
                         }
                         else
                         {
-                            prep++;
-                            printf("\n l'etudiant est un etudiant de %d annee",num_class);
-                            printf("\n donc \n le nbr d'etudiant devient %d",prep);
-                            if (prep > 3)
-                            {
-                                printf("\n le nbr n'est pas genere goto regenrer");
-                                goto regenerer;
-                            }
+                            bi = c+1;
+                            printf("\n le numero est superieure est en va changer le bi a %d",bi);
                         }
+                        printf(" \n i = %d",i);
                     }
+
                 }
+
+                while (trouv == false && bi <=bs );
+
+                if (bi > bs )
+                {
+                    i= bi;
+                    printf("\n on  a pas trouver lelement mais l'emplacement i = %d ", i);
+                }
+
+                /* fin de la recherche */
+                if (trouv == false )
+                {
+                    printf("\n l'element n'est pas dans le tab_num_identif donc en va l'inserer");
+                    der_indice = nbr_case -1;
+                    printf("\nder_indc = %d",der_indice);
+                    dernier_element = tab_num_identif[der_indice ];
+                    printf("\nder_elemt = %d",tab_num_identif[der_indice]);
+                    while(tab_num_identif[der_indice] != tab_num_identif[i])
+                    {
+                        tab_num_identif[der_indice] = tab_num_identif[der_indice - 1 ];
+                        printf("\nle decalage : tab[%d] = tab[%d] ,%d,%d",der_indice,der_indice -s, tab_num_identif[der_indice]),tab_num_identif[der_indice - s ];
+
+                        der_indice--;
+                    }
+                    tab_num_identif[i] = num;
+                    printf("\n tab[%d] = %d ",i, tab_num_identif[i]);
+
+                    tab_num_identif=(int*)realloc(tab_num_identif,(nbr_case + 1)*sizeof(int));
+                    printf("\n@tab apres realoc %p",tab_num_identif);
+                    nbr_case++;
+                    tab_num_identif[nbr_case- 1 ]=dernier_element;
+                    printf("\n tab[%d] = %d ",nbr_case- 1, tab_num_identif[nbr_case- 1]);
+                }
+
+                else goto label1;
             }
+
+
+
         }
-        printf("\n----------------------------");
-        printf("\n le numero rand en sorti est %d ",num_class );
-        t++;
-        i++;
-        printf("\n nbr d'etudiant generer correctement  est %d",i-1);
-        printf("\n----------------------------");
+        t = t+1;
 
+
+
+ for(h = 0; h<=nbr_case-1; h++)
+    {
+        printf(" \ntab_num_identif[%d]=%d",h,tab_num_identif[h]);
     }
-}
+  printf("\n voulez vous ajoutez un nombre ?  0/1");
+        scanf("%d",&repence)   ;
+    }
+    while(repence == 1);
+    for(h = 0; h<=nbr_case-1; h++)
+    {
+        printf("tab_num_identif[%d]=%d",h,tab_num_identif[h]);
+    }
 
+
+}
 
